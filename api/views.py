@@ -1,8 +1,10 @@
 from rest_framework import viewsets, permissions, filters
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from .models import HydroponicSystem, SensorMeasurement
 from .serializers import HydroponicSystemSerializer, SensorMeasurementSerializer
+from rest_framework.pagination import PageNumberPagination
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -12,6 +14,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class HydroponicSystemViewSet(viewsets.ModelViewSet):
+    queryset = HydroponicSystem.objects.all()
     serializer_class = HydroponicSystemSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
@@ -26,13 +29,18 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
 
 
 class SensorMeasurementViewSet(viewsets.ModelViewSet):
+    queryset = SensorMeasurement.objects.all()
     serializer_class = SensorMeasurementSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['ph', 'temperature', 'tds']
+    filterset_fields = ['ph', 'temperature', 'tds', 'measured_at']
     ordering_fields = ['measured_at']
 
     def get_queryset(self):
         system_id = self.request.query_params.get('system_id')
-        return SensorMeasurement.objects.filter(system__owner=self.request.user, system__id=system_id)
+        if not system_id:
+            return SensorMeasurement.objects.filter(system__owner=self.request.user)
+
+        hydro_system = get_object_or_404(HydroponicSystem, id=system_id, owner=self.request.user)
+        return SensorMeasurement.objects.filter(system=hydro_system)
