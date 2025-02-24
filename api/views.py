@@ -35,7 +35,18 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at']
 
     def get_queryset(self):
-        """Return only hydroponic systems belonging to the authenticated user."""
+        """
+        Return only hydroponic systems belonging to the authenticated user.
+
+        - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
+        - Prevents errors when an AnonymousUser tries to access the data.
+        """
+        if getattr(self, 'swagger_fake_view', False):  # Schema generation case
+            return HydroponicSystem.objects.none()
+
+        if self.request.user.is_anonymous:
+            return HydroponicSystem.objects.none()
+
         return HydroponicSystem.objects.filter(owner=self.request.user)
 
     def perform_create(self, serializer):
@@ -64,9 +75,15 @@ class SensorMeasurementViewSet(viewsets.ModelViewSet):
         """
         Return sensor measurements for a specific hydroponic system owned by the user.
 
-        - If `system_id` is provided, returns measurements for that system.
-        - If no `system_id` is provided, returns all measurements from user's systems.
+        - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
+        - Prevents errors when an AnonymousUser tries to access the data.
         """
+        if getattr(self, 'swagger_fake_view', False):  # Schema generation case
+            return SensorMeasurement.objects.none()
+
+        if self.request.user.is_anonymous:
+            return SensorMeasurement.objects.none()
+
         system_id = self.request.query_params.get('system_id')
         if not system_id:
             return SensorMeasurement.objects.filter(system__owner=self.request.user)
