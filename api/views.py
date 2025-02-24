@@ -75,6 +75,8 @@ class SensorMeasurementViewSet(viewsets.ModelViewSet):
         """
         Return sensor measurements for a specific hydroponic system owned by the user.
 
+        - If `system_id` is provided, returns measurements for that system.
+        - If no `system_id` is provided, returns all measurements from user's systems.
         - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
         - Prevents errors when an AnonymousUser tries to access the data.
         """
