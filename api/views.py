@@ -35,8 +35,19 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at']
 
     def get_queryset(self):
-        """Return only hydroponic systems belonging to the authenticated user."""
-        return HydroponicSystem.objects.filter(owner=self.request.user)
+        """
+        Return only hydroponic systems belonging to the authenticated user.
+
+        - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
+        - Prevents errors when an AnonymousUser tries to access the data.
+        """
+        if getattr(self, 'swagger_fake_view', False):  # Schema generation case
+            return HydroponicSystem.objects.none()
+
+        if self.request.user.is_anonymous:
+            return HydroponicSystem.objects.none()
+
+        return HydroponicSystem.objects.filter(owner=self.request.user).order_by('-created_at')
 
     def perform_create(self, serializer):
         """Ensure that the hydroponic system is associated with the logged-in user."""
@@ -66,10 +77,18 @@ class SensorMeasurementViewSet(viewsets.ModelViewSet):
 
         - If `system_id` is provided, returns measurements for that system.
         - If no `system_id` is provided, returns all measurements from user's systems.
+        - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
+        - Prevents errors when an AnonymousUser tries to access the data.
         """
+        if getattr(self, 'swagger_fake_view', False):  # Schema generation case
+            return SensorMeasurement.objects.none()
+
+        if self.request.user.is_anonymous:
+            return SensorMeasurement.objects.none()
+
         system_id = self.request.query_params.get('system_id')
         if not system_id:
-            return SensorMeasurement.objects.filter(system__owner=self.request.user)
+            return SensorMeasurement.objects.filter(system__owner=self.request.user).order_by('-measured_at')
 
         hydro_system = get_object_or_404(HydroponicSystem, id=system_id, owner=self.request.user)
-        return SensorMeasurement.objects.filter(system=hydro_system)
+        return SensorMeasurement.objects.filter(system=hydro_system).order_by('-measured_at')
