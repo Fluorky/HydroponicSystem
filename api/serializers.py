@@ -9,6 +9,13 @@ class HydroponicSystemSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['owner']
 
+    def validate_name(self, value):
+        """Ensure each user cannot create a system with the same name twice."""
+        user = self.context['request'].user
+        if HydroponicSystem.objects.filter(owner=user, name=value).exists():
+            raise serializers.ValidationError("You already have a system with this name.")
+        return value
+
 
 class SensorMeasurementSerializer(serializers.ModelSerializer):
     class Meta:

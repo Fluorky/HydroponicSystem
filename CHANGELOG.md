@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-02-25]
+
+### Added
+- **Improved Test Coverage** 🧪
+  - [api/tests/tests.py] Added more tests to increase test coverage [Major]
+  - [api/tests/tests.py] Included negative test cases [Minor]
+  - [api/tests/__init__.py] Created unit tests module [Patch]
+
+- **Refactored Code for Better Maintainability** 🔄
+  - [api/views.py] Refactored view logic to improve clarity and maintainability [Minor]
+  - [api/serializers.py] Cleaned up serializer logic [Patch]
+
+- **Fixed Response Code Issues** 🛠️
+  - [api/views.py] Fixed `404 Not Found` returning instead of `403 Forbidden` [Patch]
+  - [api/views.py] Fixed `201 Created` returning instead of `400 Bad Request` in some cases [Patch]
+  - [api/models.py] Adjusted validation logic to correctly raise errors [Patch]
+
 ## [2025-02-24]
 
 ### Added
@@ -22,6 +39,7 @@ All notable changes to this project will be documented in this file.
 
 - **Update changelog** 📖
   - [CHANGELOG.md] Update changelog [Major] 
+
 
 ### Changed
 - [HydroponicsSystem/settings.py] Updated settings to support Docker [Patch]

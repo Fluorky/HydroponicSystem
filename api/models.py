@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class HydroponicSystem(models.Model):
@@ -21,3 +22,13 @@ class SensorMeasurement(models.Model):
 
     def __str__(self):
         return f"pH: {self.ph}, Temp: {self.temperature}, TDS: {self.tds}"
+
+    def clean(self):
+        """Ensure that the pH value is within a valid range (0-14)."""
+        if not (0 <= self.ph <= 14):
+            raise ValidationError({"ph": "pH value must be between 0 and 14."})
+
+    def save(self, *args, **kwargs):
+        """Run model validation before saving."""
+        self.full_clean()  # This ensures model validation runs before saving
+        super().save(*args, **kwargs)
