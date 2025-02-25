@@ -107,6 +107,15 @@ class SensorMeasurementViewSet(viewsets.ModelViewSet):
         hydro_system = get_object_or_404(HydroponicSystem, id=system_id, owner=self.request.user)
         return SensorMeasurement.objects.filter(system=hydro_system).order_by('-measured_at')
 
+    def get_object(self):
+        """Ensure users can only access or delete their own measurements."""
+        obj = get_object_or_404(SensorMeasurement, id=self.kwargs["pk"])
+
+        if obj.system.owner != self.request.user:  # Check ownership
+            raise PermissionDenied("You do not have permission to access this measurement.")  # Return 403 Forbidden
+
+        return obj  # Unauthorized users get 403
+
     def perform_create(self, serializer):
         """Ensure that pH validation errors result in 400 Bad Request instead of a server error."""
         try:
