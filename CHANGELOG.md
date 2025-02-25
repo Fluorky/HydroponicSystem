@@ -21,6 +21,10 @@ All notable changes to this project will be documented in this file.
   - [api/views.py] Fixed `201 Created` returning instead of `400 Bad Request` in some cases [Patch]
   - [api/models.py] Adjusted validation logic to correctly raise errors [Patch]
 
+- **Update readme** 📖
+  - [README.md] Update readme [Major]
+  - [CODEOWNERS] Create information about code owners [Major]
+
 ## [2025-02-24]
 
 ### Added
