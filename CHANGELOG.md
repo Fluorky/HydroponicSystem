@@ -20,6 +20,9 @@ All notable changes to this project will be documented in this file.
   - [HydroponicsSystem/settings.py] Integrated Swagger for API documentation [Minor]
   - [HydroponicsSystem/urls.py] Added Swagger routes [Patch]
 
+- **Update changelog** 📖
+  - [CHANGELOG.md] Update changelog [Major] 
+
 ### Changed
 - [HydroponicsSystem/settings.py] Updated settings to support Docker [Patch]
 - [requirements.txt] Updated dependencies for Docker support [Patch]
