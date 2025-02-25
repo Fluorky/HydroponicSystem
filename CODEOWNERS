@@ -1,0 +1,18 @@
+# Default owner for everything
+* @Fluorky
+
+# Django configuration
+HydroponicsSystem/settings.py @Fluorky
+
+# API - all files under your control
+api/ @Fluorky
+
+# Docker and CI/CD files
+Dockerfile @Fluorky
+docker-compose.yml @Fluorky
+
+# Documentation
+/docs/ @Fluorky
+
+# Tests
+/api/tests/ @Fluorky
