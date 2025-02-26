@@ -9,6 +9,7 @@ from drf_yasg import openapi
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from api.views import RegisterView
+from django.conf import settings
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -30,3 +31,9 @@ urlpatterns = [
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/register/', RegisterView.as_view(), name='register'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

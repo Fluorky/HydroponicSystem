@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-02-26]
+
+### Added
+
 ## [2025-02-25]
+- **Add admin tools** 🛠️
+  - [api/admin.py] Add models to admin [Minor]
+  - [requirements.txt] Add libraries to requirements [Minor]
+  - [HydroponicsSystem/urls.py] Registered new user management API routes [Patch]
+  - [HydroponicsSystem/settings.py] Integrated Dev Tools [Minor]
 
 ### Added
 - **Improved Test Coverage** 🧪
