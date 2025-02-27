@@ -46,3 +46,15 @@ python = "^3.11"
 gunicorn = "23.0.0"
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.2"
+black = "^25.1.0"
+[tool.black]
+exclude = '''
+/(
+    \.venv  # Exclude .venv directory
+    | venv
+    | migrations
+    | __pycache__
+    | \.git
+)/
+'''
+
