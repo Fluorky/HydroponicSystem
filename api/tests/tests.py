@@ -5,6 +5,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import HydroponicSystem, SensorMeasurement
+from django.urls import reverse
 
 # Load environment variables
 load_dotenv()
@@ -123,6 +124,17 @@ class HydroponicSystemTests(TestCase):
         self.client.logout()
         response = self.client.get(f"{BASE_URL}/api/systems/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_system_with_latest_measurements(self):
+        for i in range(15):
+            SensorMeasurement.objects.create(system=self.system, ph=6.5, temperature=22.5, tds=500)
+        url = reverse('hydroponicsystem-detail', kwargs={'pk': self.system.id})  # Fix URL
+        print(f"Testing URL: {url}")  # Debug output
+        response = self.client.get(url)
+        print(f"Response: {response.status_code}, Data: {response.data}")  # Debug output
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('latest_measurements', response.data)
+        self.assertEqual(len(response.data['latest_measurements']), 10)
 
 
 class SensorMeasurementTests(TestCase):
@@ -257,7 +269,7 @@ class UserRegistrationTests(TestCase):
         self.assertTrue(User.objects.filter(username='newuser').exists())
 
     def test_duplicate_user_registration(self):
-        """❌ Test registering a user with an existing username (should fail)"""
+        """Test registering a user with an existing username (should fail)"""
         User.objects.create_user(username="duplicateuser", password=OTHER_PASSWORD)
         response = self.client.post(f"{BASE_URL}/api/register/", {
             'username': 'duplicateuser',
