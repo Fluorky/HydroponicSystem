@@ -9,6 +9,7 @@ from .models import HydroponicSystem, SensorMeasurement
 from .serializers import HydroponicSystemSerializer, SensorMeasurementSerializer, RegisterSerializer
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.response import Response
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -66,6 +67,13 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You do not have permission to access this system.")  # Returns 403
 
         return obj
+
+    def retrieve(self, request, *args, **kwargs):
+        """Retrieves system details along with the last 10 measurements."""
+        print(f"User: {request.user}, Queryset: {self.get_queryset()}")  # Debugging
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class SensorMeasurementViewSet(viewsets.ModelViewSet):
