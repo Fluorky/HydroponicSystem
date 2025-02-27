@@ -1,25 +1,27 @@
-# Use official Python image
+# Use the official Python image
 FROM python:3.11
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set working directory inside container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y libpq-dev && rm -rf /var/lib/apt/lists/*
+# Install Poetry
+RUN pip install --upgrade pip
+RUN pip install poetry
 
-# Copy project files to the container
-COPY . /app/
+# Copy Poetry configuration files
+COPY pyproject.toml /app/
 
 # Install dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN poetry config virtualenvs.create false && poetry lock && poetry install --no-root
+# Copy the rest of the application code into the container
+COPY . /app/
 
-# Expose Django port
+# Expose port 8000
 EXPOSE 8000
 
-# Ensure the database is ready before starting
-CMD ["gunicorn", "HydroponicsSystem.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Run the application using gunicorn
+CMD ["poetry", "run", "gunicorn", "HydroponicsSystem.wsgi:application", "--bind", "0.0.0.0:8000"]
