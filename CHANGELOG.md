@@ -1,6 +1,18 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [Release 1.3]
+
+## [2025-02-26]
+
+### Added
+
+- **Add flake8** 🛠️ 
+  - [setup.cfg] Exclude unnecessary folders like .venv and change max line length [Major]
+  - [poetry.lock] Recreate poetry lockfile [Major]
+  - [pyproject.toml] Add flake8 and black libraries [Major]
+  - [api/]  Code refactor using black [Patch]
+  - [HydroponicsSystem/] Code refactor using black [Patch]
 
 ## [Release 1.2]
 
