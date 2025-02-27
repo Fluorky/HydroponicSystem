@@ -13,10 +13,10 @@ RUN pip install --upgrade pip
 RUN pip install poetry
 
 # Copy Poetry configuration files
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml /app/
 
 # Install dependencies
-RUN poetry config virtualenvs.create false && poetry install --no-root
+RUN poetry config virtualenvs.create false && poetry lock && poetry install --no-root
 # Copy the rest of the application code into the container
 COPY . /app/
 
