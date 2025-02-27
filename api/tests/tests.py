@@ -119,12 +119,6 @@ class HydroponicSystemTests(TestCase):
         response = self.client.get(f"{BASE_URL}/api/systems/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_get_queryset_anonymous_user(self):
-        """Test that anonymous users cannot access hydroponic systems (should return empty set)"""
-        self.client.logout()
-        response = self.client.get(f"{BASE_URL}/api/systems/")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_get_system_with_latest_measurements(self):
         for i in range(15):
             SensorMeasurement.objects.create(system=self.system, ph=6.5, temperature=22.5, tds=500)
