@@ -269,11 +269,7 @@ class UserRegistrationTests(TestCase):
         self.assertTrue(User.objects.filter(username='newuser').exists())
 
     def test_duplicate_user_registration(self):
-<<<<<<< HEAD
         """Test registering a user with an existing username (should fail)"""
-=======
-        """❌ Test registering a user with an existing username (should fail)"""
->>>>>>> 83832583530a78f28670ca6bf266f7b23d1086ee
         User.objects.create_user(username="duplicateuser", password=OTHER_PASSWORD)
         response = self.client.post(f"{BASE_URL}/api/register/", {
             'username': 'duplicateuser',
