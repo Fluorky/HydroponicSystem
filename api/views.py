@@ -59,22 +59,6 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
         """Ensure that the hydroponic system is associated with the logged-in user."""
         serializer.save(owner=self.request.user)
 
-    def get_object(self):
-        """Retrieve object without filtering by user, then check permissions."""
-        obj = get_object_or_404(HydroponicSystem, id=self.kwargs["pk"])  # Ensure object exists
-
-        if obj.owner != self.request.user:
-            raise PermissionDenied("You do not have permission to access this system.")  # Returns 403
-
-        return obj
-
-    def retrieve(self, request, *args, **kwargs):
-        """Retrieves system details along with the last 10 measurements."""
-        print(f"User: {request.user}, Queryset: {self.get_queryset()}")  # Debugging
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
 
 class SensorMeasurementViewSet(viewsets.ModelViewSet):
     """
