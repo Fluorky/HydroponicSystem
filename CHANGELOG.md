@@ -7,6 +7,28 @@ All notable changes to this project will be documented in this file.
 ## [2025-02-26]
 
 ### Added
+- **Feature: Retrieve latest measurements** 📊
+  - [api/serializers.py] Updated to include `get_latest_measurements_feature` [Minor]
+  - [api/views.py] Modified to support fetching the latest 10 measurements [Minor]
+  - [api/tests/tests.py] Added test for `get_latest_measurements_feature` [Patch]
+
+### Changed
+- **Refactored dependency management** 🔄
+  - [Dockerfile] Migrated from `pip` to `poetry` [Major]
+  - [docker-compose.yml] Updated dependency management system [Major]
+  - [poetry.lock] Added poetry lockfile [Major]
+  - [pyproject.toml] Introduced poetry configuration file [Major]
+  - [README.md] Updated installation instructions for poetry [Patch]
+
+## [Release 1.1]
+
+## [2025-02-25]
+
+### Added
+- **License Added** 📜
+  - [LICENSE] Created project license file [Major]
+
+## [Release 1.0]
 
 ## [2025-02-25]
 - **Add admin tools** 🛠️
