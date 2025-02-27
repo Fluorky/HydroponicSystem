@@ -6,7 +6,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import HydroponicSystem, SensorMeasurement
-from .serializers import HydroponicSystemSerializer, SensorMeasurementSerializer, RegisterSerializer
+from .serializers import (
+    HydroponicSystemSerializer,
+    SensorMeasurementSerializer,
+    RegisterSerializer,
+)
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework.response import Response
@@ -19,8 +23,9 @@ class StandardResultsSetPagination(PageNumberPagination):
     - Default page size: 10
     - Allows user to specify page size (max: 100)
     """
+
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 100
 
 
@@ -33,12 +38,15 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
     - Ensures users can only access their own hydroponic systems
     - Provides ordering by name and creation date
     """
-    queryset = HydroponicSystem.objects.all()  # Required for automatic basename detection
+
+    queryset = (
+        HydroponicSystem.objects.all()
+    )  # Required for automatic basename detection
     serializer_class = HydroponicSystemSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['name', 'created_at']
+    ordering_fields = ["name", "created_at"]
 
     def get_queryset(self):
         """
@@ -47,13 +55,15 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
         - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
         - Prevents errors when an AnonymousUser tries to access the data.
         """
-        if getattr(self, 'swagger_fake_view', False):  # Schema generation case
+        if getattr(self, "swagger_fake_view", False):  # Schema generation case
             return HydroponicSystem.objects.none()
 
         if self.request.user.is_anonymous:
             return HydroponicSystem.objects.none()
 
-        return HydroponicSystem.objects.filter(owner=self.request.user).order_by('-created_at')
+        return HydroponicSystem.objects.filter(owner=self.request.user).order_by(
+            "-created_at"
+        )
 
     def perform_create(self, serializer):
         """Ensure that the hydroponic system is associated with the logged-in user."""
@@ -61,10 +71,14 @@ class HydroponicSystemViewSet(viewsets.ModelViewSet):
 
     def get_object(self):
         """Retrieve object without filtering by user, then check permissions."""
-        obj = get_object_or_404(HydroponicSystem, id=self.kwargs["pk"])  # Ensure object exists
+        obj = get_object_or_404(
+            HydroponicSystem, id=self.kwargs["pk"]
+        )  # Ensure object exists
 
         if obj.owner != self.request.user:
-            raise PermissionDenied("You do not have permission to access this system.")  # Returns 403
+            raise PermissionDenied(
+                "You do not have permission to access this system."
+            )  # Returns 403
 
         return obj
 
@@ -85,13 +99,16 @@ class SensorMeasurementViewSet(viewsets.ModelViewSet):
     - Filters by pH, temperature, TDS, and measurement date
     - Provides ordering by measurement date
     """
-    queryset = SensorMeasurement.objects.all()  # Required for automatic basename detection
+
+    queryset = (
+        SensorMeasurement.objects.all()
+    )  # Required for automatic basename detection
     serializer_class = SensorMeasurementSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['ph', 'temperature', 'tds', 'measured_at']
-    ordering_fields = ['measured_at']
+    filterset_fields = ["ph", "temperature", "tds", "measured_at"]
+    ordering_fields = ["measured_at"]
 
     def get_queryset(self):
         """
@@ -102,25 +119,33 @@ class SensorMeasurementViewSet(viewsets.ModelViewSet):
         - Returns an empty queryset if the request is from Swagger UI (`swagger_fake_view`).
         - Prevents errors when an AnonymousUser tries to access the data.
         """
-        if getattr(self, 'swagger_fake_view', False):
+        if getattr(self, "swagger_fake_view", False):
             return SensorMeasurement.objects.none()
 
         if self.request.user.is_anonymous:
             return SensorMeasurement.objects.none()
 
-        system_id = self.request.query_params.get('system_id')
+        system_id = self.request.query_params.get("system_id")
         if not system_id:
-            return SensorMeasurement.objects.filter(system__owner=self.request.user).order_by('-measured_at')
+            return SensorMeasurement.objects.filter(
+                system__owner=self.request.user
+            ).order_by("-measured_at")
 
-        hydro_system = get_object_or_404(HydroponicSystem, id=system_id, owner=self.request.user)
-        return SensorMeasurement.objects.filter(system=hydro_system).order_by('-measured_at')
+        hydro_system = get_object_or_404(
+            HydroponicSystem, id=system_id, owner=self.request.user
+        )
+        return SensorMeasurement.objects.filter(system=hydro_system).order_by(
+            "-measured_at"
+        )
 
     def get_object(self):
         """Ensure users can only access or delete their own measurements."""
         obj = get_object_or_404(SensorMeasurement, id=self.kwargs["pk"])
 
         if obj.system.owner != self.request.user:  # Check ownership
-            raise PermissionDenied("You do not have permission to access this measurement.")  # Return 403 Forbidden
+            raise PermissionDenied(
+                "You do not have permission to access this measurement."
+            )  # Return 403 Forbidden
 
         return obj  # Unauthorized users get 403
 
@@ -137,16 +162,17 @@ class RegisterView(generics.CreateAPIView):
     """
     API endpoint for user registration.
     """
+
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
-        user = User.objects.get(username=response.data['username'])
+        user = User.objects.get(username=response.data["username"])
         refresh = RefreshToken.for_user(user)
-        response.data['token'] = {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
+        response.data["token"] = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
         }
         return response
