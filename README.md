@@ -18,7 +18,8 @@ HydroponicSystem is a web-based application built with Django and Django REST Fr
 ## Installation and Setup
 
 ### Prerequisites
-- Python 3.x
+- Python 3.11 or higher
+- Poetry
 - Docker and Docker Compose
 - PostgreSQL (for production use)
 
@@ -40,15 +41,13 @@ DB_PORT = port
    git clone https://github.com/user/HydroponicSystem.git
    cd HydroponicSystem
    ```
-2. Create and activate a virtual environment:
+2. Install dependencies using Poetry:
    ```sh
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate  # Windows
+   poetry install
    ```
-3. Install dependencies:
+3. Activate Poetry virtual environment:
    ```sh
-   pip install -r requirements.txt
+   poetry shell
    ```
 4. Apply database migrations:
    ```sh
