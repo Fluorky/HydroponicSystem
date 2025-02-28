@@ -1,6 +1,12 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [Unreleased]
+
+## [2025-02-27]
+- **Add pull request template** 🛠️ 
+  - [PULL_REQUEST_TEMPLATE.md] Add pull request template to this project [Major]
+
 ## [Release 1.3]
 
 ## [2025-02-26]
