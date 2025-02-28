@@ -29,5 +29,12 @@
 2. Step two
 3. Step three
 
+## Deployment Notes
+<!-- Provide any additional information needed for deployment -->
+- [ ] Requires database migrations
+- [ ] Requires environment variable updates
+- [ ] Requires configuration changes
+- [ ] Other (please specify): ________________________
+
 ## Additional Notes
 <!-- Add any other context or information that reviewers might find useful -->
