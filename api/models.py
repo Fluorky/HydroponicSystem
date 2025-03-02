@@ -14,7 +14,9 @@ class HydroponicSystem(models.Model):
 
 
 class SensorMeasurement(models.Model):
-    system = models.ForeignKey(HydroponicSystem, on_delete=models.CASCADE, related_name='measurements')
+    system = models.ForeignKey(
+        HydroponicSystem, on_delete=models.CASCADE, related_name="measurements"
+    )
     ph = models.FloatField()
     temperature = models.FloatField()
     tds = models.FloatField()
